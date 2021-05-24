@@ -1,11 +1,12 @@
-package client;
+package create;
 
+import client.Client;
 import remote.iRemote;
 
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
-public class JoinBoard {
+public class CreateBoard {
 
     public static void main(String[] args) {
 
@@ -25,7 +26,8 @@ public class JoinBoard {
         try {
             Registry registry = LocateRegistry.getRegistry(serverIP);
             iRemote remoteOjb = (iRemote) registry.lookup("object");
-            Client client = new Client(remoteOjb, "guest");
+
+            Client client = new Client(remoteOjb, "manager");
         }
         catch (Exception e) {
             System.err.println("System failed to connect to the server.");
