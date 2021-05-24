@@ -6,21 +6,21 @@ import java.awt.event.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Canvas extends JPanel {
 
-    private List<MyObj> objs = new ArrayList<>();
-
+    // private List<MyObj> objs = new ArrayList<>();
+    private List<MyObj> objs;
     private String shapeToDraw;
     private Color colorToUse;
     private Shape drawing = null;
     private JTextField text = null;
 
-    public Canvas(int width, int height, Windows w) {
+    public Canvas(int width, int height, Windows w, List<MyObj> canvasObjs) {
         setPreferredSize(new Dimension(width, height));
 
+        this.objs = canvasObjs;
         MouseAdapter mouseAdapter = new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -35,6 +35,7 @@ public class Canvas extends JPanel {
                 if (shapeToDraw == null) {
                     return;
                 }
+                MyObj toDraw = new MyObj();
                 switch (shapeToDraw) {
                     case Windows.LINE:
                         drawing = new Line2D.Double(e.getPoint(), e.getPoint());
@@ -49,26 +50,30 @@ public class Canvas extends JPanel {
                         drawing = new Rectangle2D.Double(e.getX(), e.getY(), 0, 0);
                         break;
                     case Windows.TEXT:
-                        text = new JTextField();
-                        MouseAdapter adapter = new MouseAdapter() {
-                            @Override
-                            public void mouseExited(MouseEvent e) {
-                                super.mouseExited(e);
-                                text.setEditable(false);
-                                text.setBorder(null);
-                            }
-                        };
-                        text.addMouseListener(adapter);
-                        text.addMouseMotionListener(adapter);
-                        text.setBackground(Color.white);
-                        Point p = e.getPoint();
-                        text.setBounds((int) p.getX(), (int) p.getY(), 100, 30);
+                        JPanel insertPopup = new JPanel();
+                        insertPopup.setLayout(new BoxLayout(insertPopup, BoxLayout.PAGE_AXIS));
+
+                        JLabel des = new JLabel("Enter text to insert");
+                        des.setFont(new Font("", Font.PLAIN, 18));
+                        insertPopup.add(des);
+
+                        JTextField field = new JTextField();
+                        field.setPreferredSize(new Dimension(100, 30));
+                        insertPopup.add(field);
+
+                        JOptionPane.showMessageDialog(null, insertPopup);
+
+                        toDraw.setTextLocation(e.getPoint());
+                        toDraw.setText(field.getText());
+
                         break;
                     default:
                         System.out.println("Unsupported shape");
                 }
-                MyObj obj = new MyObj(colorToUse, drawing, text);
-                objs.add(obj);
+                toDraw.setColor(colorToUse);
+                toDraw.setShape(drawing);
+                objs.add(toDraw);
+                w.notify(objs);
                 repaint();
             }
 
@@ -108,14 +113,13 @@ public class Canvas extends JPanel {
                     default:
                         System.out.println("Unsupported shape");
                 }
-
+                w.notify(objs);
                 repaint();
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
                 super.mouseReleased(e);
-                System.out.println("mouse release");
                 drawing = null;
                 repaint();
             }
@@ -134,7 +138,8 @@ public class Canvas extends JPanel {
 
         Graphics2D g2d = (Graphics2D) g;
         for (MyObj obj: objs) {
-            JTextField text = obj.getText();
+            System.out.println(obj);
+            String text = obj.getText();
             if (text == null) {
                 Shape shape = obj.getShape();
                 if (shape != null) {
@@ -143,8 +148,16 @@ public class Canvas extends JPanel {
                 }
             }
             else {
-                this.add(obj.getText());
+                JLabel temp = new JLabel(text);
+                Point location = obj.getTextLocation();
+                temp.setBounds(new Rectangle(new Point((int) location.getX(), (int) location.getY()), temp.getPreferredSize()));
+                this.add(temp);
             }
         }
+    }
+
+    public void setObjs(List<MyObj> objs) {
+        this.objs = objs;
+        repaint();
     }
 }

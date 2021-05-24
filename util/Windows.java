@@ -1,9 +1,12 @@
 package util;
 
+import client.client;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 public class Windows extends JFrame {
 
@@ -21,11 +24,12 @@ public class Windows extends JFrame {
     private Color colorSelected = Color.black;
 
     private Canvas g;
+    private client c;
 
-    public Windows() {
+    public Windows(List<MyObj> canvasObjs, client c) {
         super("White Board");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
+        this.c = c;
         // option bar on the top of the canvas
         JPanel optionbar = new JPanel();
         optionbar.setPreferredSize(new Dimension(Windows.WIDTH, Windows.OPTION_BAR_HEIGHT));
@@ -356,7 +360,7 @@ public class Windows extends JFrame {
         add(s);
 
         // canvas
-        g = new Canvas(Windows.WIDTH, Windows.HEIGHT, this);
+        g = new Canvas(Windows.WIDTH, Windows.HEIGHT, this, canvasObjs);
         add(g);
 
         pack();
@@ -371,5 +375,13 @@ public class Windows extends JFrame {
 
     public Color getSelectedColor() {
         return this.colorSelected;
+    }
+
+    public void notify(List<MyObj> objs) {
+        this.c.notify(objs);
+    }
+
+    public void updateCanvas(List<MyObj> objs) {
+        g.setObjs(objs);
     }
 }
