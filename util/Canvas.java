@@ -149,6 +149,8 @@ public class Canvas extends JPanel {
             }
             else {
                 JLabel temp = new JLabel(text);
+                temp.setFont(new Font("", Font.PLAIN, 16));
+                temp.setForeground(obj.getColor());
                 Point location = obj.getTextLocation();
                 temp.setBounds(new Rectangle(new Point((int) location.getX(), (int) location.getY()), temp.getPreferredSize()));
                 this.add(temp);
