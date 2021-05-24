@@ -50,25 +50,16 @@ public class Canvas extends JPanel {
                         drawing = new Rectangle2D.Double(e.getX(), e.getY(), 0, 0);
                         break;
                     case Windows.TEXT:
-                        JPanel insertPopup = new JPanel();
-                        insertPopup.setLayout(new BoxLayout(insertPopup, BoxLayout.PAGE_AXIS));
-
-                        JLabel des = new JLabel("Enter text to insert");
-                        des.setFont(new Font("", Font.PLAIN, 18));
-                        insertPopup.add(des);
-
-                        JTextField field = new JTextField();
-                        field.setPreferredSize(new Dimension(100, 30));
-                        insertPopup.add(field);
-
-                        JOptionPane.showMessageDialog(null, insertPopup);
-
+                        String inp = JOptionPane.showInputDialog("Enter text to be inserted", "");
+                        if (inp == null) {
+                            // user clicked on cancel
+                            inp = "";
+                        }
                         toDraw.setTextLocation(e.getPoint());
-                        toDraw.setText(field.getText());
-
+                        toDraw.setText(inp);
                         break;
                     default:
-                        System.out.println("Unsupported shape");
+                        System.err.println("Unsupported shape selected");
                 }
                 toDraw.setColor(colorToUse);
                 toDraw.setShape(drawing);
@@ -137,25 +128,30 @@ public class Canvas extends JPanel {
         setBackground(Color.WHITE);
 
         Graphics2D g2d = (Graphics2D) g;
-        for (MyObj obj: objs) {
-            System.out.println(obj);
-            String text = obj.getText();
-            if (text == null) {
-                Shape shape = obj.getShape();
-                if (shape != null) {
-                    g2d.setPaint(obj.getColor());
-                    g2d.draw(shape);
+        if (objs != null) {
+            for (MyObj obj : objs) {
+                // System.out.println(obj);
+                String text = obj.getText();
+                if (text == null) {
+                    Shape shape = obj.getShape();
+                    if (shape != null) {
+                        g2d.setPaint(obj.getColor());
+                        g2d.draw(shape);
+                    }
+                } else {
+                    JLabel temp = new JLabel(text);
+                    temp.setFont(new Font("", Font.PLAIN, 16));
+                    temp.setForeground(obj.getColor());
+                    Point location = obj.getTextLocation();
+                    temp.setBounds(new Rectangle(new Point((int) location.getX(), (int) location.getY()), temp.getPreferredSize()));
+                    this.add(temp);
                 }
             }
-            else {
-                JLabel temp = new JLabel(text);
-                temp.setFont(new Font("", Font.PLAIN, 16));
-                temp.setForeground(obj.getColor());
-                Point location = obj.getTextLocation();
-                temp.setBounds(new Rectangle(new Point((int) location.getX(), (int) location.getY()), temp.getPreferredSize()));
-                this.add(temp);
-            }
         }
+    }
+
+    public List<MyObj> getObjs() {
+        return objs;
     }
 
     public void setObjs(List<MyObj> objs) {

@@ -1,27 +1,21 @@
 package server;
 
 import remote.iRemote;
-import util.MyObj;
 
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
-public class server {
+public class Server {
 
     public static void main(String[] args) {
         try {
 
-            List<MyObj> canvasObjs = new ArrayList<>();
-            List<String> guests = new ArrayList<>();
-
-            iRemote remoteo = new Remoteo(guests, canvasObjs);
+            iRemote remoteo = new Remoteo();
 
             Registry registry = LocateRegistry.getRegistry();
             // registry.unbind("object");
             registry.rebind("object", remoteo);
+            System.out.println("Server is running normally");
         }
         catch (Exception e) {
             e.printStackTrace();
