@@ -36,7 +36,7 @@ public class Client {
                     e.printStackTrace();
                 }
             }
-        }, 0, 1000);
+        }, 0, 500);
 
         Timer tUser = new Timer();
         tUser.scheduleAtFixedRate(new TimerTask() {
