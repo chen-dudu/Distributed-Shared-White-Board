@@ -1,3 +1,6 @@
 .idea
 out
 *.class
+create/META-INF
+join/META-INF
+server/META-INF
