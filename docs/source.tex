@@ -1,0 +1,79 @@
+\documentclass{article}
+% \documentstyle[fullpage]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{geometry}
+\usepackage{graphicx}
+
+\geometry{a4paper, top = 25mm, bottom = 50mm, total = {6in, 8in}}
+
+\renewcommand{\theenumi}{\alph{enumi}}
+    
+\title{COMP90015 Distributed Systems \\ 
+       Assignment 2 Report}
+\author{Liguo Chen\\Student ID: 851090}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section*{Problem}
+In this project, a shared whiteboard will be built, which supports multiple users drawing simultaneously.\\\\
+Some basic features include:
+\begin{itemize}
+    \item draw line, oval, circle, and rectangle
+    \item insert texts
+    \item users can choose the favourite colors for drawing and inserted text
+\end{itemize}
+Some advanced features include:
+\begin{itemize}
+    \item users can chat with each other
+    \item manager can kick out ordinary users
+    \item users can leave
+    \item manager can save the whiteboard on local machine
+\end{itemize}
+
+\section*{System architecture}
+The system is Client - Server architecture.\\\\
+All information about whiteboard, including active users, chat messages, content of the canvas, is stored in the central server.\\\\
+Information exchange, for example manager kicks out a user, is done via the central server.
+
+\section*{Communication}
+The Client - Server communication is done by using java RMI.\\\\
+\textbf{iRemote} is the remote interface, which defines available methods the server prodvides. \textbf{Remoteo} is the remote object, which implements all the remote methdos defined in \textbf{iRemote}, and is the main server-side end-point for communication.
+
+\section*{Design diagrams}
+\subsection*{Class diagram}
+\subsubsection*{Overall}
+\includegraphics[width=16cm]{overall}
+\subsubsection*{MyObj}
+\includegraphics[width=8cm]{myobj}
+\subsubsection*{Client}
+\includegraphics[width=8cm]{client}
+\subsubsection*{iRemote}
+\includegraphics[width=8cm]{iremote}
+\subsubsection*{Remoteo}
+\includegraphics[width=8cm]{remoteo}
+\subsubsection*{Windows}
+\includegraphics[width=8cm]{windows}
+\subsubsection*{Canvas}
+\includegraphics[width=8cm]{canvas}
+\subsubsection*{UserList}
+\includegraphics[width=8cm]{userlist}
+\subsubsection*{ChatBox}
+\includegraphics[width=8cm]{chatbox}
+
+\subsection*{Sequence Diagram}
+\includegraphics[width=16cm]{sequence diagram}
+
+\section*{Implementation details}
+\textbf{MyObj} represents an object in the canvas. It could be a shape, or an inserted text. To support java RMI communication, \textbf{MyObj} is serializable.\\\\
+\textbf{Client} represents a user in the system. It is responsible for notifying server about modifications and getting the latest information from server and passing down to window for rendering.\\\\
+\textbf{Windows} represents the client GUI window. It communicate with \textbf{Client} to fulfill all the required features of the system.\\\\
+\textbf{Canvas} represents the canvas object in the client GUI. When a new shape is drawn or a new text is inserted, it will notify \textbf{Windows}\\\\
+\textbf{UserList} represents a component in the GUI and its main job is to display a list of active users in the system\\\\
+\textbf{ChatBox} is a GUI component similar to \textbf{UserList}. Instead of displaying a list of users, \textbf{ChatBox} shows a list of chat message sent by all users.
+
+\end{document}
