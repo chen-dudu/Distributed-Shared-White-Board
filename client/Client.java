@@ -1,5 +1,6 @@
 package client;
 
+import com.sun.org.apache.regexp.internal.RE;
 import remote.iRemote;
 import util.MyObj;
 import util.Windows;
@@ -63,6 +64,23 @@ public class Client {
                 }
             }
         }, 0, 500);
+
+        if (position.equals("guest")) {
+            Timer tClose = new Timer();
+            tClose.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    try {
+                        if (!remote.isBoardReady()) {
+                            window.serverClose();
+                        }
+                    }
+                    catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, 0, 500);
+        }
     }
 
     public void notifyNewDraw(List<MyObj> objs) {

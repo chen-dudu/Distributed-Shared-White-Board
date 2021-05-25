@@ -118,11 +118,13 @@ public class Windows extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String fileName = JOptionPane.showInputDialog("Enter the name of the file to be opened", "");
                 try {
-                    ObjectInputStream is = new ObjectInputStream(new FileInputStream(fileName));
-                    List<MyObj> objs = (List<MyObj>) is.readObject();
-                    is.close();
-                    g.setObjs(objs);
-                    c.notifyNewDraw(objs);
+                    if (fileName != null && fileName.length() > 0) {
+                        ObjectInputStream is = new ObjectInputStream(new FileInputStream(fileName));
+                        List<MyObj> objs = (List<MyObj>) is.readObject();
+                        is.close();
+                        g.setObjs(objs);
+                        c.notifyNewDraw(objs);
+                    }
                 }
                 catch (FileNotFoundException fex) {
                     JOptionPane.showMessageDialog(getContentPane(), "Did not find file with name " + fileName, "Alert", JOptionPane.WARNING_MESSAGE);
@@ -141,7 +143,7 @@ public class Windows extends JFrame {
         itemSave.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String fileName = "out.txt";
+                String fileName = "save.txt";
                 try {
                     ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(fileName));
                     os.writeObject(g.getObjs());
@@ -165,11 +167,13 @@ public class Windows extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String fileName = JOptionPane.showInputDialog("Enter the name of the file to be saved", "");
                 try {
-                    ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(fileName));
-                    os.writeObject(g.getObjs());
-                    os.flush();
-                    os.close();
-                    JOptionPane.showMessageDialog(null, "Saved successfully");
+                    if (fileName != null && fileName.length() > 0) {
+                        ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(fileName));
+                        os.writeObject(g.getObjs());
+                        os.flush();
+                        os.close();
+                        JOptionPane.showMessageDialog(null, "Saved successfully");
+                    }
                 }
                 catch (Exception ex) {
                     JOptionPane.showMessageDialog(getContentPane(), "Failed to save white board to disk", "Alert", JOptionPane.WARNING_MESSAGE);
@@ -615,5 +619,10 @@ public class Windows extends JFrame {
         if (msgList != null) {
             msgList.setMsg(msgs);
         }
+    }
+
+    public void serverClose() {
+        JOptionPane.showMessageDialog(null, "The manager has close this whiteboard.");
+        System.exit(0);
     }
 }
